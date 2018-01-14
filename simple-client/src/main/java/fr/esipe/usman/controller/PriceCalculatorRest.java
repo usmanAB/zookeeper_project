@@ -1,6 +1,6 @@
-package fr.xebia.blog.controller;
+package fr.esipe.usman.controller;
 
-import fr.xebia.blog.model.Article;
+import fr.esipe.usman.model.Article;
 import org.apache.curator.x.discovery.ServiceDiscovery;
 import org.apache.curator.x.discovery.ServiceInstance;
 import org.slf4j.Logger;

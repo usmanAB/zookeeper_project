@@ -1,4 +1,4 @@
-package fr.xebia.blog.models;
+package fr.esipe.usman.models;
 
 import java.util.ArrayList;
 import java.util.List;

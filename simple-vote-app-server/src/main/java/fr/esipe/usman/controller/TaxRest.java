@@ -1,6 +1,6 @@
-package fr.xebia.blog.controller;
+package fr.esipe.usman.controller;
 
-import fr.xebia.blog.models.Score;
+import fr.esipe.usman.models.Score;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

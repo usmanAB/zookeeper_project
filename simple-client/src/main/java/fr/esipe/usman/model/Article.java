@@ -1,4 +1,4 @@
-package fr.xebia.blog.model;
+package fr.esipe.usman.model;
 
 public class Article {
 

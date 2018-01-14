@@ -1,4 +1,4 @@
-package fr.xebia.blog;
+package fr.esipe.usman;
 
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
