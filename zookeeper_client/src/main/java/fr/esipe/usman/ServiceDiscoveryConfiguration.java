@@ -1,0 +1,78 @@
+package fr.esipe.usman;
+
+import org.apache.curator.CuratorZookeeperClient;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.CuratorFrameworkFactory;
+import org.apache.curator.framework.recipes.leader.LeaderLatchListener;
+import org.apache.curator.retry.ExponentialBackoffRetry;
+import org.apache.curator.x.discovery.ServiceDiscovery;
+import org.apache.curator.x.discovery.ServiceDiscoveryBuilder;
+import org.apache.curator.x.discovery.ServiceInstance;
+import org.apache.curator.x.discovery.UriSpec;
+import org.apache.curator.x.discovery.details.JsonInstanceSerializer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.context.annotation.Bean;
+
+import java.util.logging.Logger;
+
+@SpringApplicationConfiguration
+public class ServiceDiscoveryConfiguration implements CommandLineRunner, LeaderLatchListener {
+    private final Logger logger = java.util.logging.Logger.getLogger("ServiceDiscoveryConfiguration");
+
+    @Autowired
+    ServiceDiscovery<String> discovery;
+
+    /**
+     * serverPort est fourni au démarrage en ligne de commande
+     */
+//
+    @Value("${server.port}")
+    private int serverPort;
+    @Autowired(required = false)
+    @Value("${zookeeper.hosts}")
+    private String zookeeper_hosts;
+
+    public void run(String... args) throws Exception {
+
+        ServiceInstance<String> instance =
+                ServiceInstance.<String>builder()
+                        .name("zookeeper_client")
+                        .payload("1.0")
+                        .address("localhost")
+                        .port(serverPort)
+                        .uriSpec(new UriSpec("{scheme}://{address}:{port}/votes"))
+                        .build();
+
+        discovery.registerService(instance);
+    }
+
+    @Bean(initMethod = "start", destroyMethod = "close")
+    public CuratorFramework curator() {
+        return CuratorFrameworkFactory.newClient(zookeeper_hosts, new ExponentialBackoffRetry(1000, 3));
+    }
+
+    @Bean(initMethod = "start", destroyMethod = "close")
+    public ServiceDiscovery<String> discovery() {
+        JsonInstanceSerializer<String> serializer =
+                new JsonInstanceSerializer<String>(String.class);
+
+        return ServiceDiscoveryBuilder.builder(String.class)
+                .client(curator())
+                .basePath("services")
+                .serializer(serializer)
+                .build();
+    }
+
+    @Override
+    public void isLeader() {
+        logger.info("Je suis sur le leader");
+    }
+
+    @Override
+    public void notLeader() {
+
+    }
+}

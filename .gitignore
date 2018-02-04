@@ -9,5 +9,6 @@ buildNumber.properties
 *.idea
 *.iml
 
-simple-client/target/
-simple-tax-api/target/
+zookeeper_client/target/
+server_jetty/target/
+commons/target/
