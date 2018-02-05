@@ -43,7 +43,7 @@ public class HomeController {
             logger.info("appel de l'url: "+ serviceUrl);
            // score = restTemplate.getForObject(serviceUrl, Integer.class,number);
 
-            return "Le service 'simple-vote-app-server' est fourni par "+ services.size() +" instance(s)";
+            return "Le service 'zookeeper_client' est fourni par "+ services.size() +" instance(s)";
         }
 
         return "Aucune instance disponible !";
@@ -56,7 +56,7 @@ public class HomeController {
         Collection<ServiceInstance<String>> services = discovery.queryForInstances("zookeeper_client");
         logger.info("Score recu du client : "+ number);
         RestTemplate restTemplate = new RestTemplate();
-        logger.info("Le service 'simple-vote-app-server' est fourni par "+ services.size()+" instance(s)" );
+        logger.info("Le service 'zookeeper_clienter' est fourni par "+ services.size()+" instance(s)" );
 
         if (services.iterator().hasNext()) {
             // Nous utilisons par défaut le premier dans la liste
