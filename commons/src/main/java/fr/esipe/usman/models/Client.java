@@ -21,8 +21,8 @@ public class Client {
     }
 
 
-    public void setVote(int vote) {
-        this.vote = vote;
+    public void setVote() {
+        this.vote = vote+1;
     }
 
     public String getLogin() {
