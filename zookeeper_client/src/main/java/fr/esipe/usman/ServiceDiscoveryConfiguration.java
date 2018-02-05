@@ -15,10 +15,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.logging.Logger;
 
-@SpringApplicationConfiguration
+@Configuration
 public class ServiceDiscoveryConfiguration implements CommandLineRunner, LeaderLatchListener {
     private final Logger logger = java.util.logging.Logger.getLogger("ServiceDiscoveryConfiguration");
 
@@ -31,7 +32,7 @@ public class ServiceDiscoveryConfiguration implements CommandLineRunner, LeaderL
 //
     @Value("${server.port}")
     private int serverPort;
-    @Autowired(required = false)
+
     @Value("${zookeeper.hosts}")
     private String zookeeper_hosts;
 
@@ -51,7 +52,7 @@ public class ServiceDiscoveryConfiguration implements CommandLineRunner, LeaderL
 
     @Bean(initMethod = "start", destroyMethod = "close")
     public CuratorFramework curator() {
-        return CuratorFrameworkFactory.newClient(zookeeper_hosts, new ExponentialBackoffRetry(1000, 3));
+        return CuratorFrameworkFactory.newClient("192.168.43.201,192.168.43.222,192.168.43.206", new ExponentialBackoffRetry(1000, 3));
     }
 
     @Bean(initMethod = "start", destroyMethod = "close")

@@ -4,10 +4,8 @@ package VoteManagement;
 import fr.esipe.usman.ServiceDiscoveryConfiguration;
 import fr.esipe.usman.services.VoteManagement;
 import org.apache.curator.framework.CuratorFramework;
-import org.apache.curator.framework.CuratorFrameworkFactory;
-import org.apache.curator.retry.ExponentialBackoffRetry;
-import org.junit.Before;
-import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.logging.Logger;
 
@@ -20,11 +18,16 @@ public class VoteManagementTest{
 
     private VoteManagement voteManagement;
 
-    @Before
-    public void init(){
+
+    @Autowired(required = false)
+    @Value("${zookeeper.hosts}")
+    private String zookeeper_hosts;
+
+/*    @Before
+    public void init2(){
         service = new ServiceDiscoveryConfiguration();
         voteManagement = new VoteManagement();
-        zkClient = CuratorFrameworkFactory.newClient("192.168.43.85,192.168.43.164,192.168.43.156", new ExponentialBackoffRetry(1000, 3));
+        zkClient = CuratorFrameworkFactory.newClient(zookeeper_hosts, new ExponentialBackoffRetry(1000, 3));
         zkClient.start();
 
     }
@@ -41,11 +44,11 @@ public class VoteManagementTest{
     public void testDeleteClientToZookeeper(){
         logger.info(zkClient.getNamespace());
         //TODO
-    }
+    }*/
 
 
 
-    @Test
+/*    @Test
     public void testGetClientToZookeeper(){
         logger.info(zkClient.getNamespace());
         //TODO
@@ -57,6 +60,6 @@ public class VoteManagementTest{
     public void testDeleteAllClientToZookeeper(){
         logger.info(zkClient.getNamespace());
         //TODO
-    }
+    }*/
 
 }

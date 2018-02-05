@@ -15,26 +15,16 @@ public class VoteManagement implements IVoteManagement{
         int count;
         logger.info("APPEL addVoteToZookeeper");
         Client clientModified =null;
+        ObjectMapper mapper = new ObjectMapper();
         if(!pathExists(zkClient,path)){
-            zkClient.create().forPath("/services/listClient", new byte[0]);
+            return null;
         }
 
-//        List<Client> cl = getClientListFromZookeeper(zkClient,path);
-//        for (int i = 0; i < cl.size(); i++) {
-//            if (cl.get(i).getId().equals(id2)) {
-//                count = cl.get(i).getVote();
-//                cl.get(i).setVote(count + 1);
-//                clientModified = cl.get(i);
-//            }
-//        }
+        clientModified = getClientById(id2, path,zkClient);
+        clientModified.setVote();
+        byte[] writeValueAsBytes = mapper.writeValueAsBytes(clientModified);
 
-//        List<?> cl2 = getClientListFromZookeeper(zkClient,path)
-//                .stream()
-//                .filter(client -> id2.equals(client.getId())).collect(Collectors.toList());
-
-
-
-//        loadClientsToZookeeper(cl,path,zkClient);
+        zkClient.setData().forPath(path+"/"+clientModified.getId(),writeValueAsBytes);
 
         logger.info("Client trouvé ! : ");
         return clientModified;

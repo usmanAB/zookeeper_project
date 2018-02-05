@@ -9,6 +9,7 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +26,10 @@ import java.util.logging.Logger;
 public class VoteController {
     private final Logger logger = Logger.getLogger("VoteController");
 
-    private CuratorFramework zkClient = CuratorFrameworkFactory.newClient("192.168.43.85,192.168.43.164,192.168.43.156", new ExponentialBackoffRetry(1000, 3));
+    @Value("${zookeeper.hosts}")
+    private String zookeeper_hosts;
+
+    private CuratorFramework zkClient = CuratorFrameworkFactory.newClient("192.168.43.201,192.168.43.222,192.168.43.206", new ExponentialBackoffRetry(1000, 3));
     private static final String LIST_CLIENT_PATH = "/services/listClient";
     private final VoteManagement voteManagement;
 
@@ -163,16 +167,4 @@ public class VoteController {
         System.out.println(outputList);
         return temp;
     }
-
-
-
-
-
-
-    @RequestMapping(value = "/ttc", method = RequestMethod.GET)
-    public double add(@RequestParam("ht") double ht) {
-        return ht * (1 + TVA);
-    }
-
-    private static final double TVA = 0.2;
 }

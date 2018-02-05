@@ -32,7 +32,7 @@ public class ServiceDiscoveryClientConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "close")
     public CuratorFramework curator() {
-        return CuratorFrameworkFactory.newClient(zookeeper_hosts, new ExponentialBackoffRetry(1000, 6));
+        return CuratorFrameworkFactory.newClient("192.168.43.201,192.168.43.222,192.168.43.206", new ExponentialBackoffRetry(1000, 6));
     }
 
 }
