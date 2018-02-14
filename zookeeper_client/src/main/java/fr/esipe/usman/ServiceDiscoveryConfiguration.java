@@ -40,6 +40,8 @@ public class ServiceDiscoveryConfiguration implements CommandLineRunner, LeaderL
 
     public void run(String... args) throws Exception {
 
+        //Dans ce morceau de code, nous déclarons concrètement que notre service nommé « zookeeper_client »
+        // en version 1.0 est disponible sur « http://localhost:{serverPort}/vote »
         ServiceInstance<String> instance =
                 ServiceInstance.<String>builder()
                         .name("zookeeper_client")
