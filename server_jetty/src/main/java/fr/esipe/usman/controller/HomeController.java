@@ -21,7 +21,7 @@ public class HomeController {
     private RestTemplate restTemplate = new RestTemplate();
 
     @Autowired
-    ServiceDiscovery<String> discovery;
+        ServiceDiscovery<String> discovery;
 
 
 
