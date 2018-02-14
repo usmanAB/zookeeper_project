@@ -88,22 +88,22 @@ public class VoteController {
                 new ResponseEntity<>(client.get(), HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-//    @RequestMapping(value = "/loadClients", method = RequestMethod.GET)
-//    public HttpStatus loadClients() throws Exception {
-//        logger.info("Appel loadClients ! ");
-//        Client c = new Client(0,"papa");
-//        voteManagement.loadClientsToZookeeper(c, LIST_CLIENT_PATH,zkClient);
-//
-//        return voteManagement.pathExists(zkClient,LIST_CLIENT_PATH+"/"+c.getId()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
-//
-//    }
-//
-//    @RequestMapping(value = "/deleteAllClients", method = RequestMethod.GET)
-//    public HttpStatus deleteClients() throws Exception {
-//        logger.info("Appel deleteClients ! ");
-//        zkClient.delete().deletingChildrenIfNeeded().forPath("/services/listClient");
-//        return !voteManagement.pathExists(zkClient,LIST_CLIENT_PATH) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
-//    }
+    @RequestMapping(value = "/loadClients", method = RequestMethod.GET)
+    public HttpStatus loadClients() throws Exception {
+        logger.info("Appel loadClients ! ");
+        Client c = new Client(0,"papa");
+        voteManagement.loadClientsToZookeeper(c, LIST_CLIENT_PATH,zkClient);
+
+        return voteManagement.pathExists(zkClient,LIST_CLIENT_PATH+"/"+c.getId()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
+
+    }
+
+    @RequestMapping(value = "/deleteAllClients", method = RequestMethod.GET)
+    public HttpStatus deleteClients() throws Exception {
+        logger.info("Appel deleteClients ! ");
+        zkClient.delete().deletingChildrenIfNeeded().forPath("/services/listClient");
+        return !voteManagement.pathExists(zkClient,LIST_CLIENT_PATH) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
+    }
 
 
     @RequestMapping(value = "/removeClient/{id}", method = RequestMethod.GET)
