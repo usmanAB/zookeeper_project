@@ -72,6 +72,7 @@ public class VoteManagement implements IVoteManagement{
             byte[] writeValueAsBytes = mapper.writeValueAsBytes(client_added);
 
             if(!pathExists(zkClient,path+"/"+c.getId())){
+                logger.warning(path+"/"+c.getId());
                 zkClient.create().creatingParentsIfNeeded().forPath(path+"/"+c.getId());
             }
             zkClient.setData().forPath(path+"/"+c.getId(), writeValueAsBytes);
@@ -140,7 +141,11 @@ public class VoteManagement implements IVoteManagement{
 
 //Check if client exists with path
     public boolean pathExists(CuratorFramework client,String path) throws Exception {
-        return client.checkExists().forPath(path)!=null;
+        logger.warning("PATH A VERIFIER : "+path);
+        if(client.checkExists().forPath(path)==null)
+            return false;
+        else
+            return true;
     }
 
 

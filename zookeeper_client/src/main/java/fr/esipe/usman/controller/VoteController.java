@@ -1,6 +1,7 @@
 package fr.esipe.usman.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fr.esipe.usman.ServiceDiscoveryConfiguration;
 import fr.esipe.usman.services.VoteManagement;
 import org.apache.curator.CuratorZookeeperClient;
 import org.apache.curator.RetryPolicy;
@@ -14,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import fr.esipe.usman.models.Client;
+
+import java.io.IOException;
+import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,22 +29,35 @@ import java.util.logging.Logger;
 @RequestMapping(value = "/votes")
 public class VoteController {
     private final Logger logger = Logger.getLogger("VoteController");
+    private CuratorFramework zkClient;
 
     @Value("${zookeeper.hosts}")
     private String zookeeper_hosts;
 
-    private CuratorFramework zkClient = CuratorFrameworkFactory.newClient("192.168.43.201,192.168.43.222,192.168.43.206", new ExponentialBackoffRetry(1000, 3));
+
     private static final String LIST_CLIENT_PATH = "/services/listClient";
     private final VoteManagement voteManagement;
 
     @Autowired
     public VoteController(VoteManagement voteManagement){
         this.voteManagement=voteManagement;
-        zkClient.start();
-
+        this.connect();
     }
 
+    private void connect() {
+        try{
+            logger.warning("Open connection... ");
 
+            zkClient = CuratorFrameworkFactory.newClient("192.168.43.201,192.168.43.222,192.168.43.206", new ExponentialBackoffRetry(1000, 3));
+            zkClient.start();
+            logger.warning("Zookeeper client started ! ... "+zkClient.getState().toString());
+
+
+        }catch (Exception e){
+            zkClient.close();
+            logger.warning("Handle exception "+e);
+        }
+    }
 
 
     @RequestMapping(value = "/addVoteZoo/{id}", method = RequestMethod.POST)
@@ -71,22 +88,22 @@ public class VoteController {
                 new ResponseEntity<>(client.get(), HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @RequestMapping(value = "/loadClients", method = RequestMethod.GET)
-    public HttpStatus loadClients() throws Exception {
-        logger.info("Appel loadClients ! ");
-        Client c = new Client(0,"papa");
-        voteManagement.loadClientsToZookeeper(c, LIST_CLIENT_PATH,zkClient);
-
-        return voteManagement.pathExists(zkClient,LIST_CLIENT_PATH+"/"+c.getId()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
-
-    }
-
-    @RequestMapping(value = "/deleteAllClients", method = RequestMethod.GET)
-    public HttpStatus deleteClients() throws Exception {
-        logger.info("Appel deleteClients ! ");
-        zkClient.delete().deletingChildrenIfNeeded().forPath("/services/listClient");
-        return !voteManagement.pathExists(zkClient,LIST_CLIENT_PATH) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
-    }
+//    @RequestMapping(value = "/loadClients", method = RequestMethod.GET)
+//    public HttpStatus loadClients() throws Exception {
+//        logger.info("Appel loadClients ! ");
+//        Client c = new Client(0,"papa");
+//        voteManagement.loadClientsToZookeeper(c, LIST_CLIENT_PATH,zkClient);
+//
+//        return voteManagement.pathExists(zkClient,LIST_CLIENT_PATH+"/"+c.getId()) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
+//
+//    }
+//
+//    @RequestMapping(value = "/deleteAllClients", method = RequestMethod.GET)
+//    public HttpStatus deleteClients() throws Exception {
+//        logger.info("Appel deleteClients ! ");
+//        zkClient.delete().deletingChildrenIfNeeded().forPath("/services/listClient");
+//        return !voteManagement.pathExists(zkClient,LIST_CLIENT_PATH) ? HttpStatus.OK : HttpStatus.NO_CONTENT;
+//    }
 
 
     @RequestMapping(value = "/removeClient/{id}", method = RequestMethod.GET)

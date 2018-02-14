@@ -36,6 +36,8 @@ public class ServiceDiscoveryConfiguration implements CommandLineRunner, LeaderL
     @Value("${zookeeper.hosts}")
     private String zookeeper_hosts;
 
+    public static CuratorFramework curatorFrameworkFactory;
+
     public void run(String... args) throws Exception {
 
         ServiceInstance<String> instance =
@@ -50,9 +52,28 @@ public class ServiceDiscoveryConfiguration implements CommandLineRunner, LeaderL
         discovery.registerService(instance);
     }
 
+
+
     @Bean(initMethod = "start", destroyMethod = "close")
     public CuratorFramework curator() {
-        return CuratorFrameworkFactory.newClient("192.168.43.201,192.168.43.222,192.168.43.206", new ExponentialBackoffRetry(1000, 3));
+        logger.warning("------------------------------------");
+        logger.warning("--------ZOOKEEPER CONNECTION DISCOVERY--------");
+        logger.warning("------------------------------------");
+        logger.warning("Open connection... ");
+        logger.warning("------------------------------------");
+        logger.warning("------------CALL CURATOR-------------");
+
+        logger.warning("CALL curator !");
+        try{
+            curatorFrameworkFactory = CuratorFrameworkFactory.newClient("192.168.43.201,192.168.43.222,192.168.43.206", new ExponentialBackoffRetry(1000, 3));
+        logger.warning("Zookeeper client started ! ... "+curatorFrameworkFactory.getState().toString());
+        logger.warning("------------------------------------");
+
+        }catch (Exception e){
+            logger.warning("ERREUR !"+e);
+
+        }
+        return curatorFrameworkFactory;
     }
 
     @Bean(initMethod = "start", destroyMethod = "close")
