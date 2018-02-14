@@ -29,12 +29,14 @@ public class HomeController {
     public String getStatus() throws Exception {
         logger.info("Appel getStatus !");
 
+        //Pour récupérer des informations sur le « zookeeper_client », nous utilisons l’instance de ServiceDiscovery en
+        // lui demandant de nous retourner la liste des instances actuellement disponibles pour nous fournir le service
         Collection<ServiceInstance<String>> services = discovery.queryForInstances("zookeeper_client");
 
         logger.info("Le service 'simple-vote-app-server' est fourni par "+ services.size() +" instance(s) dans Zookeeper");
 
         if (services.iterator().hasNext()) {
-            // Nous utilisons par défaut le premier dans la liste
+            // Nous utilisons par défaut le premier dans la liste  et appelons le service dessus
             ServiceInstance<String> serviceInstance = services.iterator().next();
 
             logger.info("version du service: "+ serviceInstance.getPayload());

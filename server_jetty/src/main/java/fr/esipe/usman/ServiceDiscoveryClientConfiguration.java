@@ -24,9 +24,14 @@ public class ServiceDiscoveryClientConfiguration {
 
     @Bean(initMethod = "start", destroyMethod = "close")
     public ServiceDiscovery<String> discovery() {
+        //JsonInstanceSerializer nous permet d’annoncer que nous allons stocker des informations supplémentaires
+        // grâce à l’utilisation de JSON
         JsonInstanceSerializer<String> serializer =
                 new JsonInstanceSerializer<String>(String.class);
 
+
+        //ServiceDiscoveryBuilder pour préciser dans quel rangement le service veut s’enregistrer
+        // ici dans rangement "services"
         return ServiceDiscoveryBuilder.builder(String.class)
                 .client(curator())
                 .basePath("services")
